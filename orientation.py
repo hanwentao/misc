@@ -23,7 +23,7 @@ def get_orientation(path):
         exif = image._getexif()
         if exif[274] >= 5:
             width, height = height, width
-    finally:
+    except (IOError, KeyError):
         pass
     if width > height:
         return 'landscape'
