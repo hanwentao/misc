@@ -25,6 +25,8 @@ def report_progress(num_blocks_transferred, block_size, total_size):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description='download songs from Google Music (China).')
+    parser.add_argument('-n', '--dry-run', action='store_true', dest='dry_run',
+                        help='show what are to be done, not actually do things')
     parser.add_argument('artist_ids', metavar='ARTIST_ID', nargs='+',
                         help='ID of the artist whose songs are to be downloaded')
     args = parser.parse_args()
@@ -71,14 +73,15 @@ def main(argv=None):
                 if not is_downloadable:
                     continue
 
-                try:
-                    os.makedirs(dir_path)
-                except OSError:
-                    pass
-                urllib.urlretrieve(song.downloadUrl, downloading_file_path, report_progress)
-                sys.stdout.write('\n')
-                sys.stdout.flush()
-                os.rename(downloading_file_path, downloaded_file_path)
+                if not args.dry_run:
+                    try:
+                        os.makedirs(dir_path)
+                    except OSError:
+                        pass
+                    urllib.urlretrieve(song.downloadUrl, downloading_file_path, report_progress)
+                    sys.stdout.write('\n')
+                    sys.stdout.flush()
+                    os.rename(downloading_file_path, downloaded_file_path)
 
 if __name__ == '__main__':
     sys.exit(main())
