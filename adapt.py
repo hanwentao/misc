@@ -22,7 +22,7 @@ def adapt(source_path, target_path, target_size, args=None):
             source_image = source_image.rotate(-90)
         elif exif[274] == 8:
             source_image = source_image.rotate(90)
-    except (IOError, KeyError):
+    except (AttributeError, IOError, KeyError):
         pass
     source_width, source_height = source_image.size
     target_width, target_height = target_size
