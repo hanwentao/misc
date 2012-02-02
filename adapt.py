@@ -9,7 +9,7 @@ import re
 import sys
 import Image
 
-def adapt(source_path, target_path, target_size):
+def adapt(source_path, target_path, target_size, args=None):
     """Adapts the source image to the target size."""
 
     source_image = Image.open(source_path)
@@ -49,6 +49,10 @@ def adapt(source_path, target_path, target_size):
     crop_box = (crop_x0, crop_y0, crop_x0 + target_width, crop_y0 + target_height)
     cropped_image = resized_image.crop(crop_box)
 
+    # Convert to grayscale if specified
+    if args and args.grayscale:
+        cropped_image = cropped_image.convert("L")
+
     # Save the image
     cropped_image.save(target_path)
 
@@ -68,6 +72,10 @@ def main(argv=None):
                         metavar='SIZE',
                         default='800x600',
                         help='specify the target size')
+    parser.add_argument('-g', '--grayscale',
+                        dest='grayscale',
+                        action='store_true',
+                        help='convert to grayscale')
     parser.add_argument('-v', '--verbose',
                         action='store_true',
                         help='verbose output')
@@ -85,7 +93,7 @@ def main(argv=None):
         output_path = os.path.join(args.output_dir, os.path.basename(image_path))
         if args.verbose:
             sys.stdout.write('%s => %s\n' % (image_path, output_path))
-        adapt(image_path, output_path, args.target_size)
+        adapt(image_path, output_path, args.target_size, args)
 
 if __name__ == '__main__':
     sys.exit(main())
