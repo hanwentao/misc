@@ -28,22 +28,27 @@ def count_cpus(cpus):
     physical_ids = set()
     core_ids_in_first_socket = set()
     first_physical_id = ''
+    hyperthreading = False
     for cpu in cpus:
         physical_ids.add(cpu['physical id'])
         if not first_physical_id:
             first_physical_id = cpu['physical id']
         if cpu['physical id'] == first_physical_id:
+            if cpu['core id'] in core_ids_in_first_socket:
+                hyperthreading = True
             core_ids_in_first_socket.add(cpu['core id'])
     stats['sockets'] = len(physical_ids)
     stats['cores per socket'] = len(core_ids_in_first_socket)
+    stats['hyperthreading'] = hyperthreading
     return stats
 
 def main(argv=sys.argv[1:]):
     cpus = read_cpus('/proc/cpuinfo')
     stats = count_cpus(cpus)
-    print '%s %dx%d' % (cpus[0]['model name'],
+    print '%s %dx%d%s' % (cpus[0]['model name'],
                         stats['cores per socket'],
-                        stats['sockets'])
+                        stats['sockets'],
+                        ' (hyperthreading)' if stats['hyperthreading'] else '')
 
 if __name__ == '__main__':
     sys.exit(main())
