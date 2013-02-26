@@ -10,3 +10,4 @@ This project is a collection of my miscellaneous programs.  Here is the list:
 * ``lovetree.py``: Waters the love tree on renren.com
 * ``download_songs.py``: Downloads songs from Google Music (China)
 * ``cpuinfo.py``: Get the name and the number of processors from ``/proc/cpuinfo``
+* ``chinese_rings.py``: Solve the Chinese rings puzzle
